@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Counter with Form Validation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Monoton&display=swap');
+    </style>
+</head>
+<body class="bg-black py-[100px]">
+    <div class="container mx-auto bg-black">
+        <!-- Counter Section -->
+        <div class="w-[90%] mx-auto flex flex-col justify-center items-center bg-[black] p-8 gap-7">
+            <div class="bg-[#fcfbf5] p-7 flex flex-col justify-center items-center gap-7 rounded-xl">
+                <div>
+                    <h1 class="font-[Monoton] text-red-700">Counter</h1>
+                </div>
+                <div>
+                    <p id="para" class="rounded-full w-[100px] h-[100px] text-[30px] font-bold shadow-[0_0_10px_blue] bg-[white] flex justify-center items-center border-2 border-[#1900ff]">0</p>
+                </div>
+                <div class="flex flex-row justify-center items-center gap-6">
+                    <button id="btn1" class="px-7 bg-[#f96e6e] rounded-sm border-2 border-[red]">Decrement</button>
+                    <button id="btn2" class="w-[59px] h-[59px] bg-[#206aff] rounded-full flex justify-center items-center">Reset</button>
+                    <button id="btn3" class="px-7 bg-[#65fe65] rounded-sm border-2 border-[#00ff26]">Increment</button>
+                </div>
+            </div> 
+        </div>
+        
+        <!-- Form Section -->
+        <div class="w-[90%] mx-auto flex flex-col justify-center items-center bg-[black] p-8 gap-7 mt-10">
+            <div class="bg-[#fcfbf5] p-7 flex flex-col justify-center items-center gap-7 rounded-xl w-full">
+                <h1 class="font-[Monoton] text-blue-700">Form Styling and Validation</h1>
+                <form id="myForm" class="bg-white p-6 rounded shadow-md w-full">
+                    <div class="mb-4">
+                        <label for="name" class="block text-gray-700">Name</label>
+                        <input type="text" id="name" class="w-full p-2 border border-gray-300 rounded mt-2">
+                        <span id="nameError" class="text-red-500 text-sm"></span>
+                    </div>
+                    <div class="mb-4">
+                        <label for="email" class="block text-gray-700">Email</label>
+                        <input type="email" id="email" class="w-full p-2 border border-gray-300 rounded mt-2">
+                        <span id="emailError" class="text-red-500 text-sm"></span>
+                    </div>
+                    <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded">Submit</button>
+                </form>
+                <div id="storedData" class="text-white mt-5"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get elements for counter
+        const para = document.getElementById("para");
+        const btn1 = document.getElementById("btn1");
+        const btn2 = document.getElementById("btn2");
+        const btn3 = document.getElementById("btn3");
+
+        // Event listeners for counter
+        btn1.addEventListener("click", () => {
+            para.textContent = parseInt(para.textContent) - 1;
+            para.style.color = "red";
+            para.style.border = "red";
+            para.style.boxShadow = '0 0 10px red';
+            console.log("Decrement");
+        });
+
+        btn2.addEventListener("click", () => {
+            para.textContent = 0;
+            para.style.color = "blue";
+            para.style.border = "#117611";
+            para.style.boxShadow = '0 0 10px blue';
+            console.log("Reset");
+        });
+
+        btn3.addEventListener("click", () => {
+            para.textContent = parseInt(para.textContent) + 1;
+            para.style.color = "green";
+            para.style.border = "#117611";
+            para.style.boxShadow = '0 0 10px #65fe65';
+            console.log("Increment");
+        });
+
+        // Form validation and storage
+        document.getElementById('myForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            let name = document.getElementById('name').value;
+            let email = document.getElementById('email').value;
+            let valid = true;
+
+            // Name validation
+            if (name === '') {
+                document.getElementById('nameError').textContent = 'Name is required.';
+                valid = false;
+            } else {
+                document.getElementById('nameError').textContent = '';
+            }
+
+            // Email validation
+            if (email === '') {
+                document.getElementById('emailError').textContent = 'Email is required.';
+                valid = false;
+            } else if (!/\S+@\S+\.\S+/.test(email)) {
+                document.getElementById('emailError').textContent = 'Email is invalid.';
+                valid = false;
+            } else {
+                document.getElementById('emailError').textContent = '';
+            }
+
+            if (valid) {
+                localStorage.setItem('formData', JSON.stringify({ name: name, email: email }));
+                displayStoredData();
+                alert('Form submitted successfully!');
+                console.log("Form Submitted");
+            }
+        });
+
+        function displayStoredData() {
+            let storedDataDiv = document.getElementById('storedData');
+            let formData = JSON.parse(localStorage.getItem('formData'));
+
+            if (formData) {
+                storedDataDiv.innerHTML = `<h2>Stored Data:</h2>
+                                           <p><strong>Name:</strong> ${formData.name}</p>
+                                           <p><strong>Email:</strong> ${formData.email}</p>`;
+            } else {
+                storedDataDiv.innerHTML = '';
+            }
+        }
+
+        // Display stored data on page load
+        window.onload = function() {
+            displayStoredData();
+        };
+    </script>
+</body>
+</html>
